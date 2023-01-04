@@ -23,6 +23,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	const initializationOptions: LanguageServerInitializationOptions = {
+		// no need tsdk because language server do not have typescript features
+		// typescript: { tsdk: require('path').join(vscode.env.appRoot, 'extensions/node_modules/typescript/lib') },
 		diagnosticModel: DiagnosticModel.Pull,
 	};
 	const clientOptions: lsp.LanguageClientOptions = {
