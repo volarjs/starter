@@ -1,7 +1,5 @@
 <!-- type any css in following block to get css completion -->
-<style>
-width: ;
-</style>
+<style>.foo { c }</style>
 
 <!-- custom diagnosis: Only one style tag is allowed. -->
 <style></style>
