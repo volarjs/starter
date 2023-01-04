@@ -10,6 +10,7 @@
 		"watch:tsc": "tsc -b tsconfig.json -w",
 		"watch:esbuild": "cd ./packages/vscode-html1 && npm run watch",
 		"prerelease": "npm run build",
+		"pack": "cd ./packages/vscode-html1 && npm run pack",
 		"release": "cd ./packages/vscode-html1 && npm run release"
 	},
 	"devDependencies": {
