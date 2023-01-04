@@ -2,27 +2,37 @@
 
 This is a template for building Embedded Language Tools based on Volar Framework.
 
-If you're working on something like this, you probably started with VSCode's "Embedded Programming Languages" chapter. If not, I strongly suggest you read it carefully first.
+If you're working on something like this, you probably started with VSCode's [Embedded Programming Languages](https://code.visualstudio.com/api/language-extensions/embedded-languages) chapter. If not, I strongly suggest you read it carefully first.
 
 The article mentions two methods to implement Embedded Language support. This template belongs to the extension of the "Language Server for Embedded Language with Language Services" method, but we abstract all the places you don't need to care about, such as virtual code mapping, formatting edits merge etc.
 
 Same with the article, this template uses .html1 as an example to implement embedded HTML and CSS support.
 
-## Usage
-
-### Tools
+## Tools
 
 - pnpm: monorepo support
 - esbuild: bundle extension
 
-Make sure to execute `pnpm i` after clone template;
+## Running the Sample
 
-### Debug
+- Run `pnpm install` in this folder. This installs all necessary npm modules in both the client and server folder
+- Open VS Code on this folder.
+- Press Ctrl+Shift+B to compile the client and server.
+- Switch to the Debug viewlet.
+- Select `Launch HTML1` from the drop down.
+- Run the launch config.
+- If you want to debug the server as well use the launch configuration `Attach to Server`
+- In the [Extension Development Host] instance of VSCode, open a `test.html1`
+  - Type `<d|` to try HTML completion
+  - Type `<style>.foo { c| }</style>` to try CSS completion
+  - Have `<style>.foo { }</style>` to see CSS Diagnostics
 
-Open VSCode debug sidebar and run `Launch HTML1`, a new VSCode window will be open at `sample/` folder, and than you can open `sample/test.html1` to check language server features.
+## Build .vsix
 
-To adding break point for language server code (`packages/language-server`, `packages/language-core`), you should also run `Attach to Server` on debug panel.
+- Run `pnpm run pack` in this folder
+- `packages/vscode-html1/vscode-html1-0.0.1.vsix` will be created, and you can manual install it to VSCode.
 
-### Build .vsix
+## References
 
-Run `pnpm run pack`, `vscode-html1-0.0.1.vsix` will create to `packages/vscode-html1/`, and than you can manual install it to VSCode.
+- https://code.visualstudio.com/api/language-extensions/embedded-languages
+- https://github.com/microsoft/vscode-extension-samples/tree/main/lsp-embedded-language-service
