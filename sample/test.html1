@@ -1,0 +1,10 @@
+<!-- type any css in following block to get css completion -->
+<style>
+width: ;
+</style>
+
+<!-- custom diagnosis: Only one style tag is allowed. -->
+<style></style>
+
+<!-- type ">" to trigger auto close --> 
+<div

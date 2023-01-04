@@ -1,0 +1,19 @@
+{
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/volarjs/language-tools-starter.git"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.json",
+		"watch": "npm run build && (npm run watch:tsc & npm run watch:esbuild)",
+		"watch:tsc": "tsc -b tsconfig.json -w",
+		"watch:esbuild": "cd ./packages/vscode-html1 && npm run watch",
+		"prerelease": "npm run build",
+		"release": "cd ./packages/vscode-html1 && npm run release"
+	},
+	"devDependencies": {
+		"@types/node": "latest",
+		"typescript": "latest"
+	}
+}
