@@ -1,3 +1,3 @@
-let modulePath = './dist/node/server';
-try { modulePath = require.resolve('@volar-examples/html1-language-server/bin/html1-language-server'); } catch { }
+let modulePath = './dist/node/server.js';
+try { modulePath = require.resolve('@html1-language-tools/language-server/bin/html1-language-server.js'); } catch { }
 module.exports = require(modulePath);
