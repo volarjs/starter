@@ -19,7 +19,7 @@ Same with the article, this template uses .html1 as an example to implement embe
 - Open VS Code on this folder.
 - Press Ctrl+Shift+B to compile the client and server.
 - Switch to the Debug viewlet.
-- Select `Launch HTML1` from the drop down.
+- Select `Launch Client` from the drop down.
 - Run the launch config.
 - If you want to debug the server as well use the launch configuration `Attach to Server`
 - In the [Extension Development Host] instance of VSCode, open a `test.html1`
