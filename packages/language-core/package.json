@@ -8,7 +8,7 @@
 		"out/**/*.d.ts"
 	],
 	"dependencies": {
-		"@volar/language-core": "1.0.22",
+		"@volar/language-core": "1.0.24",
 		"vscode-html-languageservice": "^5.0.3"
 	}
 }

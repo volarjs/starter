@@ -12,30 +12,12 @@ export const languageModule: LanguageModule<Html1File> = {
 	},
 };
 
-const fullFileCapabilities: FileCapabilities = {
-	diagnostic: true,
-	foldingRange: true,
-	documentFormatting: true,
-	documentSymbol: true,
-	codeAction: true,
-	inlayHint: true,
-};
-const fullFileRangeCapabilities: FileRangeCapabilities = {
-	hover: true,
-	references: true,
-	definition: true,
-	rename: true,
-	completion: true,
-	diagnostic: true,
-	semanticTokens: true,
-};
-
 const htmlLs = html.getLanguageService();
 
 export class Html1File implements VirtualFile {
 
 	kind = FileKind.TextFile;
-	capabilities = fullFileCapabilities;
+	capabilities = FileCapabilities.full;
 
 	fileName!: string;
 	mappings!: VirtualFile['mappings'];
@@ -60,7 +42,7 @@ export class Html1File implements VirtualFile {
 		this.mappings = [{
 			sourceRange: [0, this.snapshot.getLength()],
 			generatedRange: [0, this.snapshot.getLength()],
-			data: fullFileRangeCapabilities,
+			data: FileRangeCapabilities.full,
 		}];
 		this.document = html.TextDocument.create(this.fileName, 'html', 0, this.snapshot.getText(0, this.snapshot.getLength()));
 		this.htmlDocument = htmlLs.parseHTMLDocument(this.document);
@@ -84,9 +66,9 @@ export class Html1File implements VirtualFile {
 					mappings: [{
 						sourceRange: [root.startTagEnd, root.endTagStart],
 						generatedRange: [0, styleText.length],
-						data: fullFileRangeCapabilities,
+						data: FileRangeCapabilities.full,
 					}],
-					capabilities: fullFileCapabilities,
+					capabilities: FileCapabilities.full,
 					embeddedFiles: [],
 				});
 			}
