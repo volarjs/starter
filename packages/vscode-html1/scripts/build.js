@@ -11,7 +11,7 @@ require('esbuild').build({
 	],
 	format: 'cjs',
 	platform: 'node',
-	tsconfig: '../../tsconfig.json',
+	tsconfig: './tsconfig.json',
 	define: { 'process.env.NODE_ENV': '"production"' },
 	minify: process.argv.includes('--minify'),
 	watch: process.argv.includes('--watch'),

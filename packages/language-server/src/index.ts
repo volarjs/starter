@@ -1,11 +1,16 @@
 import { languageModule, Html1File } from '@html1-language-tools/language-core';
-import createEmmetPlugin from '@volar-plugins/emmet';
-import createHtmlPlugin from '@volar-plugins/html';
-import createCssPlugin from '@volar-plugins/css';
+import * as createEmmetPlugin from '@volar-plugins/emmet';
+import * as createHtmlPlugin from '@volar-plugins/html';
+import * as createCssPlugin from '@volar-plugins/css';
 import { createConnection, startLanguageServer, LanguageServerPlugin, Diagnostic } from '@volar/language-server/node';
 
 const plugin: LanguageServerPlugin = () => ({
-	extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 }],
+	tsconfigExtraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 }],
+	diagnosticDocumentSelector: [{ language: 'html1' }],
+	extensions: {
+		fileRenameOperationFilter: [],
+		fileWatcher: [],
+	},
 	getLanguageModules() {
 		return [languageModule];
 	},
