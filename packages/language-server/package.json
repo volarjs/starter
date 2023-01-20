@@ -15,6 +15,6 @@
 		"@volar-plugins/css": "1.1.0",
 		"@volar-plugins/emmet": "1.1.1",
 		"@volar-plugins/html": "1.1.1",
-		"@volar/language-server": "1.1.0-alpha.1"
+		"@volar/language-server": "1.0.24"
 	}
 }
