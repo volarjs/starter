@@ -19,7 +19,7 @@ const plugin: LanguageServerPlugin = () => ({
 				validation: {
 					onSyntactic(document) {
 
-						const file = context.documents.getVirtualFileByUri(document.uri);
+						const [file] = context.documents.getVirtualFileByUri(document.uri);
 						if (!(file instanceof Html1File)) return;
 
 						const styleNodes = file.htmlDocument.roots.filter(root => root.tag === 'style');
