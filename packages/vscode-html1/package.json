@@ -22,6 +22,18 @@
 	],
 	"main": "client",
 	"contributes": {
+		"commands": [
+			{
+				"command": "html1.action.showVirtualFiles",
+				"title": "Show Virtual Files",
+				"category": "Html1 (Debug)"
+			},
+			{
+				"command": "html1.action.writeVirtualFiles",
+				"title": "Write Virtual Files",
+				"category": "Html1 (Debug)"
+			}
+		],
 		"languages": [
 			{
 				"id": "html1",
