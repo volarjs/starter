@@ -1,7 +1,7 @@
 import { DiagnosticModel, LanguageServerInitializationOptions } from '@volar/language-server';
 import * as vscode from 'vscode';
 import * as lsp from 'vscode-languageclient/node';
-import { registerAutoInsertion } from '@volar/vscode-language-client';
+import { activateAutoInsertion } from '@volar/vscode';
 
 let client: lsp.BaseLanguageClient;
 
@@ -40,7 +40,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	await client.start();
 
 	// support for auto close tag
-	registerAutoInsertion(context, [client], document => document.languageId === 'html1');
+	activateAutoInsertion([client], document => document.languageId === 'html1');
 }
 
 export function deactivate(): Thenable<any> | undefined {
