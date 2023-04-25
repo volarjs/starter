@@ -7,7 +7,7 @@ let client: lsp.BaseLanguageClient;
 
 export async function activate(context: vscode.ExtensionContext) {
 
-	const serverModule = vscode.Uri.joinPath(context.extensionUri, 'server.js');
+	const serverModule = vscode.Uri.joinPath(context.extensionUri, 'dist', 'server.js');
 	const runOptions = { execArgv: <string[]>[] };
 	const debugOptions = { execArgv: ['--nolazy', '--inspect=' + 6009] };
 	const serverOptions: lsp.ServerOptions = {

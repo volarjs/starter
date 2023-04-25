@@ -20,7 +20,7 @@
 	"activationEvents": [
 		"onLanguage:html1"
 	],
-	"main": "client",
+	"main": "./dist/client.js",
 	"contributes": {
 		"languages": [
 			{

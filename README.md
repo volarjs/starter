@@ -30,7 +30,7 @@ Same with the article, this template uses .html1 as an example to implement embe
 ## Build .vsix
 
 - Run `pnpm run pack` in this folder
-- `packages/vscode-html1/vscode-html1-0.0.1.vsix` will be created, and you can manual install it to VSCode.
+- `packages/vscode/vscode-html1-0.0.1.vsix` will be created, and you can manual install it to VSCode.
 
 ## References
 

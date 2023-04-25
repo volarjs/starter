@@ -1,11 +1,11 @@
 require('esbuild').build({
 	entryPoints: {
-		client: './out/client.js',
+		client: './out/extension.js',
 		server: './node_modules/@html1/language-server/bin/html1-language-server.js',
 	},
 	bundle: true,
 	metafile: process.argv.includes('--metafile'),
-	outdir: './dist/node',
+	outdir: './dist',
 	external: [
 		'vscode',
 	],
