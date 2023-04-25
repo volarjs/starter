@@ -12,10 +12,10 @@
 	},
 	"dependencies": {
 		"@html1-language-tools/language-core": "workspace:*",
-		"@volar-plugins/css": "2.0.0-alpha.21",
-		"@volar-plugins/emmet": "2.0.0-alpha.21",
-		"@volar-plugins/html": "2.0.0-alpha.21",
-		"@volar/language-server": "1.4.0-alpha.7",
-		"@volar/language-service": "1.4.0-alpha.7"
+		"@volar-plugins/css": "2.0.0",
+		"@volar-plugins/emmet": "2.0.0",
+		"@volar-plugins/html": "2.0.0",
+		"@volar/language-server": "1.4.1",
+		"@volar/language-service": "1.4.1"
 	}
 }
