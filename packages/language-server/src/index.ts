@@ -1,4 +1,4 @@
-import { languageModule, Html1File } from '@html1-language-tools/language-core';
+import { languageModule, Html1File } from './virtualFile';
 import createEmmetPlugin from '@volar-plugins/emmet';
 import createHtmlPlugin from '@volar-plugins/html';
 import createCssPlugin from '@volar-plugins/css';
