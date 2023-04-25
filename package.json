@@ -8,10 +8,10 @@
 		"build": "tsc -b tsconfig.build.json",
 		"watch": "npm run build && (npm run watch:tsc & npm run watch:esbuild)",
 		"watch:tsc": "tsc -b tsconfig.build.json -w",
-		"watch:esbuild": "cd ./packages/vscode-html1 && npm run watch",
+		"watch:esbuild": "cd ./packages/vscode && npm run watch",
 		"prerelease": "npm run build",
-		"pack": "cd ./packages/vscode-html1 && npm run pack",
-		"release": "cd ./packages/vscode-html1 && npm run release"
+		"pack": "cd ./packages/vscode && npm run pack",
+		"release": "cd ./packages/vscode && npm run release"
 	},
 	"devDependencies": {
 		"@types/node": "latest",

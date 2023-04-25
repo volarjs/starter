@@ -9,7 +9,7 @@
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--disable-extensions",
-				"--extensionDevelopmentPath=${workspaceRoot}/packages/vscode-html1",
+				"--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
 				"--folder-uri=${workspaceRoot}/sample",
 			],
 			"outFiles": [

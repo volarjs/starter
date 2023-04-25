@@ -35,7 +35,7 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3
 
-  packages/vscode-html1:
+  packages/vscode:
     devDependencies:
       '@html1/language-server':
         specifier: workspace:*
