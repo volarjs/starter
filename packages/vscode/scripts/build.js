@@ -1,6 +1,6 @@
 require('esbuild').build({
 	entryPoints: {
-		client: './out/extension.js',
+		client: './src/extension.js',
 		server: './node_modules/@html1/language-server/bin/html1-language-server.js',
 	},
 	bundle: true,
