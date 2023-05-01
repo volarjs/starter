@@ -1,24 +1,24 @@
-import { languageModule, Html1File } from './virtualFile';
-import createEmmetPlugin from '@volar-plugins/emmet';
-import createHtmlPlugin from '@volar-plugins/html';
-import createCssPlugin from '@volar-plugins/css';
-import { createConnection, startLanguageServer, LanguageServerPlugin, Diagnostic, LanguageServicePluginInstance } from '@volar/language-server/node';
+import { language, Html1File } from './language';
+import createEmmetService from 'volar-service-emmet';
+import createHtmlService from 'volar-service-html';
+import createCssService from 'volar-service-css';
+import { createConnection, startLanguageServer, LanguageServerPlugin, Diagnostic, Service } from '@volar/language-server/node';
 
 const plugin: LanguageServerPlugin = (): ReturnType<LanguageServerPlugin> => ({
 	extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 }],
 	resolveConfig(config) {
 
-		// parsers
+		// languages
 		config.languages ??= {};
-		config.languages.html1 ??= languageModule;
+		config.languages.html1 ??= language;
 
-		// plugins
-		config.plugins ??= {};
-		config.plugins.html ??= createHtmlPlugin();
-		config.plugins.css ??= createCssPlugin();
-		config.plugins.emmet ??= createEmmetPlugin();
-		config.plugins.html1 ??= (context): LanguageServicePluginInstance => ({
-			provideSyntacticDiagnostics(document) {
+		// services
+		config.services ??= {};
+		config.services.html ??= createHtmlService();
+		config.services.css ??= createCssService();
+		config.services.emmet ??= createEmmetService();
+		config.services.html1 ??= (context): ReturnType<Service> => ({
+			provideDiagnostics(document) {
 
 				const [file] = context!.documents.getVirtualFileByUri(document.uri);
 				if (!(file instanceof Html1File)) return;

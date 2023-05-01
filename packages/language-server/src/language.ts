@@ -1,14 +1,14 @@
-import { LanguageModule, VirtualFile, FileKind, FileCapabilities, FileRangeCapabilities } from "@volar/language-core";
+import { Language, VirtualFile, FileKind, FileCapabilities, FileRangeCapabilities } from "@volar/language-core";
 import * as html from 'vscode-html-languageservice';
 import type * as ts from 'typescript/lib/tsserverlibrary';
 
-export const languageModule: LanguageModule<Html1File> = {
-	createFile(fileName, snapshot) {
+export const language: Language<Html1File> = {
+	createVirtualFile(fileName, snapshot) {
 		if (fileName.endsWith('.html1')) {
 			return new Html1File(fileName, snapshot);
 		}
 	},
-	updateFile(html1File, snapshot) {
+	updateVirtualFile(html1File, snapshot) {
 		html1File.update(snapshot);
 	},
 };
