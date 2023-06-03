@@ -19,6 +19,7 @@ export class Html1File implements VirtualFile {
 
 	kind = FileKind.TextFile;
 	capabilities = FileCapabilities.full;
+	codegenStacks = [];
 
 	fileName!: string;
 	mappings!: VirtualFile['mappings'];
@@ -69,6 +70,7 @@ export class Html1File implements VirtualFile {
 						generatedRange: [0, styleText.length],
 						data: FileRangeCapabilities.full,
 					}],
+					codegenStacks: [],
 					capabilities: FileCapabilities.full,
 					embeddedFiles: [],
 				});
