@@ -1,4 +1,4 @@
-import { Language, VirtualFile, FileKind, FileCapabilities, FileRangeCapabilities } from "@volar/language-core";
+import { Language, VirtualFile, FileKind, FileCapabilities, FileRangeCapabilities } from '@volar/language-core';
 import * as html from 'vscode-html-languageservice';
 import type * as ts from 'typescript/lib/tsserverlibrary';
 
