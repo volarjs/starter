@@ -1,4 +1,4 @@
-import { DiagnosticModel, InitializationOptions } from '@volar/language-server';
+import { InitializationOptions } from '@volar/language-server';
 import * as vscode from 'vscode';
 import * as lsp from 'vscode-languageclient/node';
 import { activateAutoInsertion } from '@volar/vscode';
@@ -23,9 +23,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	const initializationOptions: InitializationOptions = {
-		// no need tsdk because language server do not have typescript features
+		// no need tsdk because html1 language server do not needed TS support, you can uncomment this line if needed
 		// typescript: { tsdk: require('path').join(vscode.env.appRoot, 'extensions/node_modules/typescript/lib') },
-		diagnosticModel: DiagnosticModel.Pull,
 	};
 	const clientOptions: lsp.LanguageClientOptions = {
 		documentSelector: [{ language: 'html1' }],
