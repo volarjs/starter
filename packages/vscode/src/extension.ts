@@ -1,7 +1,8 @@
 import { InitializationOptions } from '@volar/language-server';
+import * as serverProtocol from '@volar/language-server/protocol';
+import { ExportsInfoForLabs, activateAutoInsertion, supportLabsVersion } from '@volar/vscode';
 import * as vscode from 'vscode';
 import * as lsp from 'vscode-languageclient/node';
-import { activateAutoInsertion } from '@volar/vscode';
 
 let client: lsp.BaseLanguageClient;
 
@@ -40,6 +41,16 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// support for auto close tag
 	activateAutoInsertion([client], document => document.languageId === 'html1');
+
+	// support for https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volarjs-labs
+	// ref: https://twitter.com/johnsoncodehk/status/1656126976774791168
+	return {
+		volarLabs: {
+			version: supportLabsVersion,
+			languageClients: [client],
+			languageServerProtocol: serverProtocol,
+		},
+	} satisfies ExportsInfoForLabs;
 }
 
 export function deactivate(): Thenable<any> | undefined {
