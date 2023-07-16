@@ -11,12 +11,12 @@
 		"html1-language-server": "./bin/html1-language-server.js"
 	},
 	"dependencies": {
-		"@volar/language-core": "~1.8.0",
-		"@volar/language-server": "~1.8.0",
-		"@volar/language-service": "~1.8.0",
-		"volar-service-css": "0.0.9",
-		"volar-service-emmet": "0.0.9",
-		"volar-service-html": "0.0.9",
+		"@volar/language-core": "~1.9.0",
+		"@volar/language-server": "~1.9.0",
+		"@volar/language-service": "~1.9.0",
+		"volar-service-css": "0.0.10",
+		"volar-service-emmet": "0.0.10",
+		"volar-service-html": "0.0.10",
 		"vscode-html-languageservice": "^5.0.6"
 	}
 }
