@@ -15,7 +15,7 @@
 	"author": "volarjs",
 	"publisher": "volarjs",
 	"engines": {
-		"vscode": "^1.67.0"
+		"vscode": "^1.82.0"
 	},
 	"activationEvents": [
 		"onLanguage:html1"
