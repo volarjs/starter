@@ -17,7 +17,7 @@
 				"--folder-uri=${workspaceRoot}/sample",
 			],
 			"outFiles": [
-				"${workspaceRoot}/*/*/out/**/*.js"
+				"${workspaceRoot}/packages/vscode/dist/*.js"
 			],
 			"preLaunchTask": {
 				"type": "npm",
@@ -31,7 +31,7 @@
 			"port": 6009,
 			"restart": true,
 			"outFiles": [
-				"${workspaceRoot}/*/*/out/**/*.js"
+				"${workspaceRoot}/packages/vscode/dist/*.js"
 			]
 		},
 	],
