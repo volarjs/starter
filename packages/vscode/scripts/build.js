@@ -1,8 +1,9 @@
 require("esbuild").context({
 	entryPoints: {
-		client: './src/extension.js',
-		server: './node_modules/@html1/language-server/bin/html1-language-server.js',
+		client: './src/extension.ts',
+		server: '../language-server/src/index.ts',
 	},
+	sourcemap: true,
 	bundle: true,
 	metafile: process.argv.includes('--metafile'),
 	outdir: './dist',
@@ -28,11 +29,13 @@ require("esbuild").context({
 		},
 	],
 }).then(async ctx => {
+	console.log('building...');
 	if (process.argv.includes('--watch')) {
 		await ctx.watch();
 		console.log('watching...');
 	} else {
 		await ctx.rebuild();
 		await ctx.dispose();
+		console.log('finished.');
 	}
 });

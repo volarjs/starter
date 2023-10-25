@@ -9,9 +9,15 @@
 				"panel": "dedicated",
 				"reveal": "never"
 			},
-			"problemMatcher": [
-				"$tsc"
-			]
+			"problemMatcher": {
+				"pattern": {
+					"regexp": "__________"
+				},
+				"background": {
+					"beginsPattern": "building\\.\\.\\.",
+					"endsPattern": "finished\\."
+				}
+			}
 		},
 		{
 			"type": "npm",
@@ -25,9 +31,16 @@
 				"panel": "dedicated",
 				"reveal": "never"
 			},
-			"problemMatcher": [
-				"$tsc-watch"
-			]
+			"problemMatcher": {
+				"pattern": {
+					"regexp": "__________"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "building\\.\\.\\.",
+					"endsPattern": "watching\\.\\.\\."
+				}
+			}
 		}
 	]
 }
