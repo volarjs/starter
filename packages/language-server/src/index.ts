@@ -2,9 +2,9 @@ import { language, Html1File } from './language';
 import createEmmetService from 'volar-service-emmet';
 import createHtmlService from 'volar-service-html';
 import createCssService from 'volar-service-css';
-import { createConnection, startLanguageServer, LanguageServerPlugin, Diagnostic, Service } from '@volar/language-server/node';
+import { createConnection, startTypeScriptServer, TypeScriptServerPlugin, Diagnostic, Service } from '@volar/language-server/node';
 
-const plugin: LanguageServerPlugin = (): ReturnType<LanguageServerPlugin> => ({
+const plugin: TypeScriptServerPlugin = (): ReturnType<TypeScriptServerPlugin> => ({
 	extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 }],
 	resolveConfig(config) {
 
@@ -46,4 +46,4 @@ const plugin: LanguageServerPlugin = (): ReturnType<LanguageServerPlugin> => ({
 	},
 });
 
-startLanguageServer(createConnection(), plugin);
+startTypeScriptServer(createConnection(), plugin);

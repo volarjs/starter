@@ -1,10 +1,10 @@
-import { Language, VirtualFile, FileKind, FileCapabilities, FileRangeCapabilities } from '@volar/language-core';
+import { Language, VirtualFile, FileKind, FileCapabilities, CodeInformation } from '@volar/language-core';
 import * as html from 'vscode-html-languageservice';
 import type * as ts from 'typescript/lib/tsserverlibrary';
 
 export const language: Language<Html1File> = {
-	createVirtualFile(fileName, snapshot) {
-		if (fileName.endsWith('.html1')) {
+	createVirtualFile(fileName, langaugeId, snapshot) {
+		if (langaugeId.endsWith('.html1')) {
 			return new Html1File(fileName, snapshot);
 		}
 	},
@@ -21,7 +21,8 @@ export class Html1File implements VirtualFile {
 	capabilities = FileCapabilities.full;
 	codegenStacks = [];
 
-	fileName!: string;
+	id!: string;
+	languageId = 'html';
 	mappings!: VirtualFile['mappings'];
 	embeddedFiles!: VirtualFile['embeddedFiles'];
 	document!: html.TextDocument;
@@ -31,7 +32,7 @@ export class Html1File implements VirtualFile {
 		public sourceFileName: string,
 		public snapshot: ts.IScriptSnapshot,
 	) {
-		this.fileName = sourceFileName + '.html';
+		this.id = sourceFileName + '.html';
 		this.onSnapshotUpdated();
 	}
 
@@ -44,9 +45,9 @@ export class Html1File implements VirtualFile {
 		this.mappings = [{
 			sourceRange: [0, this.snapshot.getLength()],
 			generatedRange: [0, this.snapshot.getLength()],
-			data: FileRangeCapabilities.full,
+			data: CodeInformation.full,
 		}];
-		this.document = html.TextDocument.create(this.fileName, 'html', 0, this.snapshot.getText(0, this.snapshot.getLength()));
+		this.document = html.TextDocument.create(this.id, 'html', 0, this.snapshot.getText(0, this.snapshot.getLength()));
 		this.htmlDocument = htmlLs.parseHTMLDocument(this.document);
 		this.embeddedFiles = [];
 		this.addStyleTag();
@@ -58,7 +59,8 @@ export class Html1File implements VirtualFile {
 			if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
 				const styleText = this.snapshot.getText(root.startTagEnd, root.endTagStart);
 				this.embeddedFiles.push({
-					fileName: this.fileName + `.${i++}.css`,
+					id: this.id + `.${i++}.css`,
+					languageId: 'css',
 					kind: FileKind.TextFile,
 					snapshot: {
 						getText: (start, end) => styleText.substring(start, end),
@@ -68,7 +70,7 @@ export class Html1File implements VirtualFile {
 					mappings: [{
 						sourceRange: [root.startTagEnd, root.endTagStart],
 						generatedRange: [0, styleText.length],
-						data: FileRangeCapabilities.full,
+						data: CodeInformation.full,
 					}],
 					codegenStacks: [],
 					capabilities: FileCapabilities.full,
