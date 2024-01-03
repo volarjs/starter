@@ -1,10 +1,10 @@
-import { Language, VirtualFile, FileKind, FileCapabilities, CodeInformation } from '@volar/language-core';
-import * as html from 'vscode-html-languageservice';
+import { CodeMapping, LanguagePlugin, VirtualFile } from '@volar/language-core';
 import type * as ts from 'typescript/lib/tsserverlibrary';
+import * as html from 'vscode-html-languageservice';
 
-export const language: Language<Html1File> = {
+export const html1LanguagePlugin: LanguagePlugin<Html1File> = {
 	createVirtualFile(fileName, langaugeId, snapshot) {
-		if (langaugeId.endsWith('.html1')) {
+		if (langaugeId === 'html1') {
 			return new Html1File(fileName, snapshot);
 		}
 	},
@@ -17,14 +17,10 @@ const htmlLs = html.getLanguageService();
 
 export class Html1File implements VirtualFile {
 
-	kind = FileKind.TextFile;
-	capabilities = FileCapabilities.full;
-	codegenStacks = [];
-
-	id!: string;
+	fileName!: string;
 	languageId = 'html';
-	mappings!: VirtualFile['mappings'];
-	embeddedFiles!: VirtualFile['embeddedFiles'];
+	mappings!: CodeMapping[];
+	embeddedFiles!: VirtualFile[];
 	document!: html.TextDocument;
 	htmlDocument!: html.HTMLDocument;
 
@@ -32,7 +28,7 @@ export class Html1File implements VirtualFile {
 		public sourceFileName: string,
 		public snapshot: ts.IScriptSnapshot,
 	) {
-		this.id = sourceFileName + '.html';
+		this.fileName = sourceFileName + '.html';
 		this.onSnapshotUpdated();
 	}
 
@@ -43,11 +39,19 @@ export class Html1File implements VirtualFile {
 
 	onSnapshotUpdated() {
 		this.mappings = [{
-			sourceRange: [0, this.snapshot.getLength()],
-			generatedRange: [0, this.snapshot.getLength()],
-			data: CodeInformation.full,
+			sourceOffsets: [0],
+			generatedOffsets: [0],
+			lengths: [this.snapshot.getLength()],
+			data: {
+				completion: true,
+				format: true,
+				navigation: true,
+				semantic: true,
+				structure: true,
+				verification: true,
+			},
 		}];
-		this.document = html.TextDocument.create(this.id, 'html', 0, this.snapshot.getText(0, this.snapshot.getLength()));
+		this.document = html.TextDocument.create('', 'html', 0, this.snapshot.getText(0, this.snapshot.getLength()));
 		this.htmlDocument = htmlLs.parseHTMLDocument(this.document);
 		this.embeddedFiles = [];
 		this.addStyleTag();
@@ -59,21 +63,26 @@ export class Html1File implements VirtualFile {
 			if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
 				const styleText = this.snapshot.getText(root.startTagEnd, root.endTagStart);
 				this.embeddedFiles.push({
-					id: this.id + `.${i++}.css`,
+					fileName: this.fileName + `.${i++}.css`,
 					languageId: 'css',
-					kind: FileKind.TextFile,
 					snapshot: {
 						getText: (start, end) => styleText.substring(start, end),
 						getLength: () => styleText.length,
 						getChangeRange: () => undefined,
 					},
 					mappings: [{
-						sourceRange: [root.startTagEnd, root.endTagStart],
-						generatedRange: [0, styleText.length],
-						data: CodeInformation.full,
+						sourceOffsets: [root.startTagEnd],
+						generatedOffsets: [0],
+						lengths: [styleText.length],
+						data: {
+							completion: true,
+							format: true,
+							navigation: true,
+							semantic: true,
+							structure: true,
+							verification: true,
+						},
 					}],
-					codegenStacks: [],
-					capabilities: FileCapabilities.full,
 					embeddedFiles: [],
 				});
 			}
