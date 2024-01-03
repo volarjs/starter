@@ -1,5 +1,5 @@
 import { CodeMapping, LanguagePlugin, VirtualFile } from '@volar/language-core';
-import type * as ts from 'typescript/lib/tsserverlibrary';
+import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 
 export const html1LanguagePlugin: LanguagePlugin<Html1File> = {
@@ -17,7 +17,7 @@ const htmlLs = html.getLanguageService();
 
 export class Html1File implements VirtualFile {
 
-	fileName!: string;
+	fileName: string;
 	languageId = 'html';
 	mappings!: CodeMapping[];
 	embeddedFiles!: VirtualFile[];
