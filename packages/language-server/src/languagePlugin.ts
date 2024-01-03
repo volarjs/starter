@@ -1,4 +1,4 @@
-import { CodeMapping, LanguagePlugin, VirtualFile } from '@volar/language-core';
+import type { CodeMapping, LanguagePlugin, VirtualFile } from '@volar/language-core';
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 
