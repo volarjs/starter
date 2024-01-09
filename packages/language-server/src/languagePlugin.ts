@@ -18,7 +18,7 @@ const htmlLs = html.getLanguageService();
 export class Html1File implements VirtualFile {
 
 	fileName: string;
-	languageId = 'html';
+	languageId = 'html1';
 	mappings!: CodeMapping[];
 	embeddedFiles!: VirtualFile[];
 	document!: html.TextDocument;
