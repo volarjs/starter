@@ -1,16 +1,17 @@
-import { html1LanguagePlugin, Html1File } from './languagePlugin';
+import { html1LanguagePlugin, Html1GeneratedCode } from './languagePlugin';
 import { create as createEmmetService } from 'volar-service-emmet';
 import { create as createHtmlService } from 'volar-service-html';
 import { create as createCssService } from 'volar-service-css';
-import { createNodeServer, createConnection, createSimpleProjectProvider, Diagnostic } from '@volar/language-server/node';
+import { create as createTypeScriptService } from 'volar-service-typescript';
+import { createServer, createConnection, createTypeScriptProjectProvider, Diagnostic } from '@volar/language-server/node';
 
 const connection = createConnection();
-const server = createNodeServer(connection);
+const server = createServer(connection);
 
 connection.listen();
 
 connection.onInitialize(params => {
-	return server.initialize(params, createSimpleProjectProvider, {
+	return server.initialize(params, createTypeScriptProjectProvider, {
 		getLanguagePlugins() {
 			return [html1LanguagePlugin];
 		},
@@ -19,16 +20,16 @@ connection.onInitialize(params => {
 				createHtmlService(),
 				createCssService(),
 				createEmmetService(),
+				createTypeScriptService(server.modules.typescript!),
 				{
 					create(context) {
 						return {
 							provideDiagnostics(document) {
 
-								const fileName = context.env.uriToFileName(document.uri);
-								const [file] = context.language.files.getVirtualFile(fileName);
-								if (!(file instanceof Html1File)) return;
+								const [virtualCode] = context.documents.getVirtualCodeByUri(document.uri);
+								if (!(virtualCode instanceof Html1GeneratedCode)) return;
 
-								const styleNodes = file.htmlDocument.roots.filter(root => root.tag === 'style');
+								const styleNodes = virtualCode.htmlDocument.roots.filter(root => root.tag === 'style');
 								if (styleNodes.length <= 1) return;
 
 								const errors: Diagnostic[] = [];
@@ -36,8 +37,8 @@ connection.onInitialize(params => {
 									errors.push({
 										severity: 2,
 										range: {
-											start: file.document.positionAt(styleNodes[i].start),
-											end: file.document.positionAt(styleNodes[i].end),
+											start: virtualCode.document.positionAt(styleNodes[i].start),
+											end: virtualCode.document.positionAt(styleNodes[i].end),
 										},
 										source: 'html1',
 										message: 'Only one style tag is allowed.',
@@ -53,10 +54,6 @@ connection.onInitialize(params => {
 	});
 });
 
-connection.onInitialized(() => {
-	server.initialized();
-});
+connection.onInitialized(server.initialized);
 
-connection.onShutdown(() => {
-	server.shutdown();
-});
+connection.onShutdown(server.shutdown);

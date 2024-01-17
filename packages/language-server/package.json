@@ -17,6 +17,7 @@
 		"volar-service-css": "0.0.25",
 		"volar-service-emmet": "0.0.25",
 		"volar-service-html": "0.0.25",
+		"volar-service-typescript": "0.0.25",
 		"vscode-html-languageservice": "^5.1.1"
 	}
 }

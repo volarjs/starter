@@ -1,6 +1,6 @@
 import { InitializationOptions } from '@volar/language-server';
 import * as serverProtocol from '@volar/language-server/protocol';
-import { activateAutoInsertion, createLabsInfo } from '@volar/vscode';
+import { activateAutoInsertion, createLabsInfo, getTsdk } from '@volar/vscode';
 import * as vscode from 'vscode';
 import * as lsp from 'vscode-languageclient/node';
 
@@ -24,7 +24,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	const initializationOptions: InitializationOptions = {
-		// ...
+		typescript: {
+			tsdk: (await getTsdk(context)).tsdk,
+		},
 	};
 	const clientOptions: lsp.LanguageClientOptions = {
 		documentSelector: [{ language: 'html1' }],
