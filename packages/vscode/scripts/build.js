@@ -1,4 +1,4 @@
-require("esbuild").context({
+require('esbuild').context({
 	entryPoints: {
 		client: './src/extension.ts',
 		server: '../language-server/src/index.ts',
@@ -7,9 +7,7 @@ require("esbuild").context({
 	bundle: true,
 	metafile: process.argv.includes('--metafile'),
 	outdir: './dist',
-	external: [
-		'vscode',
-	],
+	external: ['vscode'],
 	format: 'cjs',
 	platform: 'node',
 	tsconfig: './tsconfig.json',
