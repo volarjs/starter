@@ -18,7 +18,7 @@ export const html1LanguagePlugin: LanguagePlugin = {
 				if (code.id.startsWith('script_')) {
 					return {
 						code,
-						extension: '.ts',
+						extension: '.js',
 						scriptKind: 1,
 					};
 				}
