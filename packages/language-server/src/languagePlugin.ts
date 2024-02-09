@@ -1,16 +1,15 @@
-import { forEachEmbeddedCode, type CodeMapping, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
+import { forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 
-export const html1LanguagePlugin: LanguagePlugin<Html1GeneratedCode> = {
+export const html1LanguagePlugin: LanguagePlugin = {
 	createVirtualCode(_id, langaugeId, snapshot) {
 		if (langaugeId === 'html1') {
-			return new Html1GeneratedCode(snapshot);
+			return createHtml1Code(snapshot);
 		}
 	},
-	updateVirtualCode(_id, html1File, snapshot) {
-		html1File.update(snapshot);
-		return html1File;
+	updateVirtualCode(_id, _oldVirtualCode, newSnapshot) {
+		return createHtml1Code(newSnapshot);
 	},
 	typescript: {
 		extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 }],
@@ -30,29 +29,16 @@ export const html1LanguagePlugin: LanguagePlugin<Html1GeneratedCode> = {
 
 const htmlLs = html.getLanguageService();
 
-export class Html1GeneratedCode implements VirtualCode {
+function createHtml1Code(snapshot: ts.IScriptSnapshot): VirtualCode {
 
-	id = 'main';
-	languageId = 'html1';
-	mappings!: CodeMapping[];
-	embeddedCodes!: VirtualCode[];
-	document!: html.TextDocument;
-	htmlDocument!: html.HTMLDocument;
-
-	constructor(public snapshot: ts.IScriptSnapshot) {
-		this.onSnapshotUpdated();
-	}
-
-	public update(newSnapshot: ts.IScriptSnapshot) {
-		this.snapshot = newSnapshot;
-		this.onSnapshotUpdated();
-	}
-
-	onSnapshotUpdated() {
-		this.mappings = [{
+	return {
+		id: 'root',
+		languageId: 'html1',
+		snapshot,
+		mappings: [{
 			sourceOffsets: [0],
 			generatedOffsets: [0],
-			lengths: [this.snapshot.getLength()],
+			lengths: [snapshot.getLength()],
 			data: {
 				completion: true,
 				format: true,
@@ -61,20 +47,21 @@ export class Html1GeneratedCode implements VirtualCode {
 				structure: true,
 				verification: true,
 			},
-		}];
-		this.document = html.TextDocument.create('', 'html', 0, this.snapshot.getText(0, this.snapshot.getLength()));
-		this.htmlDocument = htmlLs.parseHTMLDocument(this.document);
-		this.embeddedCodes = [];
-		this.addStyleTag();
-	}
+		}],
+		embeddedCodes: [...createEmbeddedCodes()],
+	};
 
-	addStyleTag() {
+	function* createEmbeddedCodes(): Generator<VirtualCode> {
+		const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
+		const htmlDocument = htmlLs.parseHTMLDocument(document);
+
 		let styles = 0;
 		let scripts = 0;
-		this.htmlDocument.roots.forEach(root => {
+
+		for (const root of htmlDocument.roots) {
 			if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-				const styleText = this.snapshot.getText(root.startTagEnd, root.endTagStart);
-				this.embeddedCodes.push({
+				const styleText = snapshot.getText(root.startTagEnd, root.endTagStart);
+				yield {
 					id: 'style_' + styles++,
 					languageId: 'css',
 					snapshot: {
@@ -96,11 +83,11 @@ export class Html1GeneratedCode implements VirtualCode {
 						},
 					}],
 					embeddedCodes: [],
-				});
+				};
 			}
 			if (root.tag === 'script' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-				const text = this.snapshot.getText(root.startTagEnd, root.endTagStart);
-				this.embeddedCodes.push({
+				const text = snapshot.getText(root.startTagEnd, root.endTagStart);
+				yield {
 					id: 'script_' + scripts++,
 					languageId: 'typescript',
 					snapshot: {
@@ -122,8 +109,8 @@ export class Html1GeneratedCode implements VirtualCode {
 						},
 					}],
 					embeddedCodes: [],
-				});
+				};
 			}
-		});
-	}
+		}
+	};
 }
