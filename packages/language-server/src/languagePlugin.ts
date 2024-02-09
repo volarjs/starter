@@ -29,7 +29,13 @@ export const html1LanguagePlugin: LanguagePlugin = {
 
 const htmlLs = html.getLanguageService();
 
-function createHtml1Code(snapshot: ts.IScriptSnapshot): VirtualCode {
+export interface Html1Code extends VirtualCode {
+	htmlDocument: html.HTMLDocument;
+}
+
+function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
+	const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
+	const htmlDocument = htmlLs.parseHTMLDocument(document);
 
 	return {
 		id: 'root',
@@ -49,11 +55,10 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): VirtualCode {
 			},
 		}],
 		embeddedCodes: [...createEmbeddedCodes()],
+		htmlDocument,
 	};
 
 	function* createEmbeddedCodes(): Generator<VirtualCode> {
-		const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
-		const htmlDocument = htmlLs.parseHTMLDocument(document);
 
 		let styles = 0;
 		let scripts = 0;

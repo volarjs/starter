@@ -1,4 +1,4 @@
-import { html1LanguagePlugin, Html1GeneratedCode } from './languagePlugin';
+import { html1LanguagePlugin, Html1Code } from './languagePlugin';
 import { create as createEmmetService } from 'volar-service-emmet';
 import { create as createHtmlService } from 'volar-service-html';
 import { create as createCssService } from 'volar-service-css';
@@ -27,9 +27,10 @@ connection.onInitialize(params => {
 							provideDiagnostics(document) {
 
 								const [virtualCode] = context.documents.getVirtualCodeByUri(document.uri);
-								if (!(virtualCode instanceof Html1GeneratedCode)) return;
+								if (virtualCode && 'htmlDocument' in virtualCode) return;
 
-								const styleNodes = virtualCode.htmlDocument.roots.filter(root => root.tag === 'style');
+								const html1Code = virtualCode as Html1Code;
+								const styleNodes = html1Code.htmlDocument.roots.filter(root => root.tag === 'style');
 								if (styleNodes.length <= 1) return;
 
 								const errors: Diagnostic[] = [];
@@ -37,8 +38,8 @@ connection.onInitialize(params => {
 									errors.push({
 										severity: 2,
 										range: {
-											start: virtualCode.document.positionAt(styleNodes[i].start),
-											end: virtualCode.document.positionAt(styleNodes[i].end),
+											start: document.positionAt(styleNodes[i].start),
+											end: document.positionAt(styleNodes[i].end),
 										},
 										source: 'html1',
 										message: 'Only one style tag is allowed.',
