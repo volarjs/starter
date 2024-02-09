@@ -30,6 +30,7 @@ export const html1LanguagePlugin: LanguagePlugin = {
 const htmlLs = html.getLanguageService();
 
 export interface Html1Code extends VirtualCode {
+	// Reuse for custom service plugin
 	htmlDocument: html.HTMLDocument;
 }
 
