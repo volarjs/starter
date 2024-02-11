@@ -3,8 +3,8 @@ import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 
 export const html1LanguagePlugin: LanguagePlugin = {
-	createVirtualCode(_id, langaugeId, snapshot) {
-		if (langaugeId === 'html1') {
+	createVirtualCode(_id, languageId, snapshot) {
+		if (languageId === 'html1') {
 			return createHtml1Code(snapshot);
 		}
 	},
@@ -40,7 +40,7 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 
 	return {
 		id: 'root',
-		languageId: 'html1',
+		languageId: 'html',
 		snapshot,
 		mappings: [{
 			sourceOffsets: [0],
