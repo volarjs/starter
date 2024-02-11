@@ -40,7 +40,7 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 
 	return {
 		id: 'root',
-		languageId: 'html1',
+		languageId: 'html',
 		snapshot,
 		mappings: [{
 			sourceOffsets: [0],

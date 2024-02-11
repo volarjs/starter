@@ -17,7 +17,7 @@ connection.onInitialize(params => {
 		},
 		getServicePlugins() {
 			return [
-				createHtmlService({ languageId: 'html1' }),
+				createHtmlService(),
 				createCssService(),
 				createEmmetService(),
 				createTypeScriptService(server.modules.typescript!),
