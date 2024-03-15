@@ -1,4 +1,4 @@
-import { forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
+import { ExtraServiceScript, forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 
@@ -12,17 +12,31 @@ export const html1LanguagePlugin: LanguagePlugin = {
 		return createHtml1Code(newSnapshot);
 	},
 	typescript: {
-		extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 }],
-		getScript(rootVirtualCode) {
-			for (const code of forEachEmbeddedCode(rootVirtualCode)) {
-				if (code.id.startsWith('script_')) {
-					return {
+		extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 satisfies ts.ScriptKind.Deferred }],
+		getScript() {
+			return undefined;
+		},
+		getExtraScripts(fileName, root) {
+			const scripts: ExtraServiceScript[] = [];
+			for (const code of forEachEmbeddedCode(root)) {
+				if (code.languageId === 'javascript') {
+					scripts.push({
+						fileName: fileName + '.' + code.id + '.js',
 						code,
 						extension: '.js',
-						scriptKind: 1,
-					};
+						scriptKind: 1 satisfies ts.ScriptKind.JS,
+					});
+				}
+				else if (code.languageId === 'typescript') {
+					scripts.push({
+						fileName: fileName + '.' + code.id + '.ts',
+						code,
+						extension: '.ts',
+						scriptKind: 3 satisfies ts.ScriptKind.TS,
+					});
 				}
 			}
+			return scripts;
 		},
 	},
 };
@@ -93,9 +107,11 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 			}
 			if (root.tag === 'script' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
 				const text = snapshot.getText(root.startTagEnd, root.endTagStart);
+				const lang = root.attributes?.lang;
+				const isTs = lang === 'ts' || lang === '"ts"' || lang === "'ts'";
 				yield {
 					id: 'script_' + scripts++,
-					languageId: 'typescript',
+					languageId: isTs ? 'typescript' : 'javascript',
 					snapshot: {
 						getText: (start, end) => text.substring(start, end),
 						getLength: () => text.length,
