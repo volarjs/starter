@@ -3,20 +3,25 @@ import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 
 export const html1LanguagePlugin: LanguagePlugin = {
-	createVirtualCode(_id, languageId, snapshot) {
+	getLanguageId(uri) {
+		if (uri.endsWith('.html1')) {
+			return 'html1';
+		}
+	},
+	createVirtualCode(_uri, languageId, snapshot) {
 		if (languageId === 'html1') {
 			return createHtml1Code(snapshot);
 		}
 	},
-	updateVirtualCode(_id, _oldVirtualCode, newSnapshot) {
+	updateVirtualCode(_uri, _oldVirtualCode, newSnapshot) {
 		return createHtml1Code(newSnapshot);
 	},
 	typescript: {
 		extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 satisfies ts.ScriptKind.Deferred }],
-		getScript() {
+		getServiceScript() {
 			return undefined;
 		},
-		getExtraScripts(fileName, root) {
+		getExtraServiceScripts(fileName, root) {
 			const scripts: ExtraServiceScript[] = [];
 			for (const code of forEachEmbeddedCode(root)) {
 				if (code.languageId === 'javascript') {
