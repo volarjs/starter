@@ -1,10 +1,10 @@
-import { createConnection, createServer, createTypeScriptProject, Diagnostic, loadTsdkByPath, VirtualCode } from '@volar/language-server/node';
+import { createConnection, createServer, createTypeScriptProject, Diagnostic, loadTsdkByPath } from '@volar/language-server/node';
 import { create as createCssService } from 'volar-service-css';
 import { create as createEmmetService } from 'volar-service-emmet';
 import { create as createHtmlService } from 'volar-service-html';
 import { create as createTypeScriptServices } from 'volar-service-typescript';
 import { URI } from 'vscode-uri';
-import { Html1Code, html1LanguagePlugin } from './languagePlugin';
+import { html1LanguagePlugin, Html1VirtualCode } from './languagePlugin';
 
 const connection = createConnection();
 const server = createServer(connection);
@@ -28,8 +28,8 @@ connection.onInitialize(params => {
 					return {
 						provideDiagnostics(document) {
 							const decoded = context.decodeEmbeddedDocumentUri(URI.parse(document.uri));
-							const virtualCode = decoded && context.language.scripts.get(decoded?.[0])?.generated?.embeddedCodes.get(decoded[1]) as VirtualCode | Html1Code | undefined;
-							if (!virtualCode || !('htmlDocument' in virtualCode)) {
+							const virtualCode = decoded && context.language.scripts.get(decoded?.[0])?.generated?.embeddedCodes.get(decoded[1]);
+							if (!(virtualCode instanceof Html1VirtualCode)) {
 								return;
 							}
 							const styleNodes = virtualCode.htmlDocument.roots.filter(root => root.tag === 'style');

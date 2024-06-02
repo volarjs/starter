@@ -1,4 +1,4 @@
-import { TypeScriptExtraServiceScript, forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
+import { CodeMapping, TypeScriptExtraServiceScript, forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 import { URI } from 'vscode-uri';
@@ -11,11 +11,8 @@ export const html1LanguagePlugin: LanguagePlugin<URI> = {
 	},
 	createVirtualCode(_uri, languageId, snapshot) {
 		if (languageId === 'html1') {
-			return createHtml1Code(snapshot);
+			return new Html1VirtualCode(snapshot);
 		}
-	},
-	updateVirtualCode(_uri, _oldVirtualCode, newSnapshot) {
-		return createHtml1Code(newSnapshot);
 	},
 	typescript: {
 		extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 satisfies ts.ScriptKind.Deferred }],
@@ -49,20 +46,17 @@ export const html1LanguagePlugin: LanguagePlugin<URI> = {
 
 const htmlLs = html.getLanguageService();
 
-export interface Html1Code extends VirtualCode {
-	// Reuse for custom service plugin
+export class Html1VirtualCode implements VirtualCode {
+	id = 'root';
+	languageId = 'html';
+	mappings: CodeMapping[];
+	embeddedCodes?: VirtualCode[];
+
+	// Reuse in custom language service plugin
 	htmlDocument: html.HTMLDocument;
-}
 
-function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
-	const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
-	const htmlDocument = htmlLs.parseHTMLDocument(document);
-
-	return {
-		id: 'root',
-		languageId: 'html',
-		snapshot,
-		mappings: [{
+	constructor(public snapshot: ts.IScriptSnapshot) {
+		this.mappings = [{
 			sourceOffsets: [0],
 			generatedOffsets: [0],
 			lengths: [snapshot.getLength()],
@@ -74,19 +68,20 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 				structure: true,
 				verification: true,
 			},
-		}],
-		embeddedCodes: [...createEmbeddedCodes()],
-		htmlDocument,
-	};
+		}];
+		this.embeddedCodes = [...this.createEmbeddedCodes()];
+		const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
+		this.htmlDocument = htmlLs.parseHTMLDocument(document);
+	}
 
-	function* createEmbeddedCodes(): Generator<VirtualCode> {
+	* createEmbeddedCodes(): Generator<VirtualCode> {
 
 		let styles = 0;
 		let scripts = 0;
 
-		for (const root of htmlDocument.roots) {
+		for (const root of this.htmlDocument.roots) {
 			if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-				const styleText = snapshot.getText(root.startTagEnd, root.endTagStart);
+				const styleText = this.snapshot.getText(root.startTagEnd, root.endTagStart);
 				yield {
 					id: 'style_' + styles++,
 					languageId: 'css',
@@ -112,7 +107,7 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 				};
 			}
 			if (root.tag === 'script' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-				const text = snapshot.getText(root.startTagEnd, root.endTagStart);
+				const text = this.snapshot.getText(root.startTagEnd, root.endTagStart);
 				const lang = root.attributes?.lang;
 				const isTs = lang === 'ts' || lang === '"ts"' || lang === "'ts'";
 				yield {
@@ -140,5 +135,5 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 				};
 			}
 		}
-	};
+	}
 }
