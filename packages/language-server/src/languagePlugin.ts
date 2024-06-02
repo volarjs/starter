@@ -50,7 +50,7 @@ export class Html1VirtualCode implements VirtualCode {
 	id = 'root';
 	languageId = 'html';
 	mappings: CodeMapping[];
-	embeddedCodes?: VirtualCode[];
+	embeddedCodes: VirtualCode[] = [];
 
 	// Reuse in custom language service plugin
 	htmlDocument: html.HTMLDocument;
@@ -69,21 +69,21 @@ export class Html1VirtualCode implements VirtualCode {
 				verification: true,
 			},
 		}];
-		const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
-		this.htmlDocument = htmlLs.parseHTMLDocument(document);
-		this.embeddedCodes = [...getHtml1EmbeddedCodes(this.htmlDocument, snapshot)];
+		this.htmlDocument = htmlLs.parseHTMLDocument(html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength())));
+		this.embeddedCodes = [...getHtml1EmbeddedCodes(snapshot, this.htmlDocument)];
 	}
 }
 
-function* getHtml1EmbeddedCodes(htmlDocument: html.HTMLDocument, snapshot: ts.IScriptSnapshot): Generator<VirtualCode> {
-	let styles = 0;
-	let scripts = 0;
+function* getHtml1EmbeddedCodes(snapshot: ts.IScriptSnapshot, htmlDocument: html.HTMLDocument): Generator<VirtualCode> {
+	const styles = htmlDocument.roots.filter(root => root.tag === 'style');
+	const scripts = htmlDocument.roots.filter(root => root.tag === 'script');
 
-	for (const root of htmlDocument.roots) {
-		if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-			const styleText = snapshot.getText(root.startTagEnd, root.endTagStart);
+	for (let i = 0; i < styles.length; i++) {
+		const style = styles[i];
+		if (style.startTagEnd !== undefined && style.endTagStart !== undefined) {
+			const styleText = snapshot.getText(style.startTagEnd, style.endTagStart);
 			yield {
-				id: 'style_' + styles++,
+				id: 'style_' + i,
 				languageId: 'css',
 				snapshot: {
 					getText: (start, end) => styleText.substring(start, end),
@@ -91,7 +91,7 @@ function* getHtml1EmbeddedCodes(htmlDocument: html.HTMLDocument, snapshot: ts.IS
 					getChangeRange: () => undefined,
 				},
 				mappings: [{
-					sourceOffsets: [root.startTagEnd],
+					sourceOffsets: [style.startTagEnd],
 					generatedOffsets: [0],
 					lengths: [styleText.length],
 					data: {
@@ -106,12 +106,16 @@ function* getHtml1EmbeddedCodes(htmlDocument: html.HTMLDocument, snapshot: ts.IS
 				embeddedCodes: [],
 			};
 		}
-		if (root.tag === 'script' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-			const text = snapshot.getText(root.startTagEnd, root.endTagStart);
-			const lang = root.attributes?.lang;
+	}
+
+	for (let i = 0; i < scripts.length; i++) {
+		const script = scripts[i];
+		if (script.startTagEnd !== undefined && script.endTagStart !== undefined) {
+			const text = snapshot.getText(script.startTagEnd, script.endTagStart);
+			const lang = script.attributes?.lang;
 			const isTs = lang === 'ts' || lang === '"ts"' || lang === "'ts'";
 			yield {
-				id: 'script_' + scripts++,
+				id: 'script_' + i,
 				languageId: isTs ? 'typescript' : 'javascript',
 				snapshot: {
 					getText: (start, end) => text.substring(start, end),
@@ -119,7 +123,7 @@ function* getHtml1EmbeddedCodes(htmlDocument: html.HTMLDocument, snapshot: ts.IS
 					getChangeRange: () => undefined,
 				},
 				mappings: [{
-					sourceOffsets: [root.startTagEnd],
+					sourceOffsets: [script.startTagEnd],
 					generatedOffsets: [0],
 					lengths: [text.length],
 					data: {
