@@ -69,71 +69,70 @@ export class Html1VirtualCode implements VirtualCode {
 				verification: true,
 			},
 		}];
-		this.embeddedCodes = [...this.createEmbeddedCodes()];
 		const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
 		this.htmlDocument = htmlLs.parseHTMLDocument(document);
+		this.embeddedCodes = [...getHtml1EmbeddedCodes(this.htmlDocument, snapshot)];
 	}
+}
 
-	* createEmbeddedCodes(): Generator<VirtualCode> {
+function* getHtml1EmbeddedCodes(htmlDocument: html.HTMLDocument, snapshot: ts.IScriptSnapshot): Generator<VirtualCode> {
+	let styles = 0;
+	let scripts = 0;
 
-		let styles = 0;
-		let scripts = 0;
-
-		for (const root of this.htmlDocument.roots) {
-			if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-				const styleText = this.snapshot.getText(root.startTagEnd, root.endTagStart);
-				yield {
-					id: 'style_' + styles++,
-					languageId: 'css',
-					snapshot: {
-						getText: (start, end) => styleText.substring(start, end),
-						getLength: () => styleText.length,
-						getChangeRange: () => undefined,
+	for (const root of htmlDocument.roots) {
+		if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
+			const styleText = snapshot.getText(root.startTagEnd, root.endTagStart);
+			yield {
+				id: 'style_' + styles++,
+				languageId: 'css',
+				snapshot: {
+					getText: (start, end) => styleText.substring(start, end),
+					getLength: () => styleText.length,
+					getChangeRange: () => undefined,
+				},
+				mappings: [{
+					sourceOffsets: [root.startTagEnd],
+					generatedOffsets: [0],
+					lengths: [styleText.length],
+					data: {
+						completion: true,
+						format: true,
+						navigation: true,
+						semantic: true,
+						structure: true,
+						verification: true,
 					},
-					mappings: [{
-						sourceOffsets: [root.startTagEnd],
-						generatedOffsets: [0],
-						lengths: [styleText.length],
-						data: {
-							completion: true,
-							format: true,
-							navigation: true,
-							semantic: true,
-							structure: true,
-							verification: true,
-						},
-					}],
-					embeddedCodes: [],
-				};
-			}
-			if (root.tag === 'script' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
-				const text = this.snapshot.getText(root.startTagEnd, root.endTagStart);
-				const lang = root.attributes?.lang;
-				const isTs = lang === 'ts' || lang === '"ts"' || lang === "'ts'";
-				yield {
-					id: 'script_' + scripts++,
-					languageId: isTs ? 'typescript' : 'javascript',
-					snapshot: {
-						getText: (start, end) => text.substring(start, end),
-						getLength: () => text.length,
-						getChangeRange: () => undefined,
+				}],
+				embeddedCodes: [],
+			};
+		}
+		if (root.tag === 'script' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
+			const text = snapshot.getText(root.startTagEnd, root.endTagStart);
+			const lang = root.attributes?.lang;
+			const isTs = lang === 'ts' || lang === '"ts"' || lang === "'ts'";
+			yield {
+				id: 'script_' + scripts++,
+				languageId: isTs ? 'typescript' : 'javascript',
+				snapshot: {
+					getText: (start, end) => text.substring(start, end),
+					getLength: () => text.length,
+					getChangeRange: () => undefined,
+				},
+				mappings: [{
+					sourceOffsets: [root.startTagEnd],
+					generatedOffsets: [0],
+					lengths: [text.length],
+					data: {
+						completion: true,
+						format: true,
+						navigation: true,
+						semantic: true,
+						structure: true,
+						verification: true,
 					},
-					mappings: [{
-						sourceOffsets: [root.startTagEnd],
-						generatedOffsets: [0],
-						lengths: [text.length],
-						data: {
-							completion: true,
-							format: true,
-							navigation: true,
-							semantic: true,
-							structure: true,
-							verification: true,
-						},
-					}],
-					embeddedCodes: [],
-				};
-			}
+				}],
+				embeddedCodes: [],
+			};
 		}
 	}
 }
