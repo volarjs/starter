@@ -28,7 +28,11 @@ connection.onInitialize(params => {
 					return {
 						provideDiagnostics(document) {
 							const decoded = context.decodeEmbeddedDocumentUri(URI.parse(document.uri));
-							const virtualCode = decoded && context.language.scripts.get(decoded?.[0])?.generated?.embeddedCodes.get(decoded[1]);
+							if (!decoded) {
+								// Not a embedded document
+								return;
+							}
+							const virtualCode = context.language.scripts.get(decoded[0])?.generated?.embeddedCodes.get(decoded[1]);
 							if (!(virtualCode instanceof Html1VirtualCode)) {
 								return;
 							}
