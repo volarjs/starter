@@ -15,6 +15,7 @@ connection.onInitialize(params => {
 	const tsdk = loadTsdkByPath(params.initializationOptions.typescript.tsdk, params.locale);
 	return server.initialize(
 		params,
+		createTypeScriptProject(tsdk.typescript, tsdk.diagnosticMessages, () => [html1LanguagePlugin]),
 		[
 			createHtmlService(),
 			createCssService(),
@@ -22,7 +23,7 @@ connection.onInitialize(params => {
 			...createTypeScriptServices(tsdk.typescript),
 			{
 				capabilities: {
-					diagnosticProvider: true,
+					diagnosticProvider: {},
 				},
 				create(context) {
 					return {
@@ -58,7 +59,6 @@ connection.onInitialize(params => {
 				},
 			},
 		],
-		createTypeScriptProject(tsdk.typescript, tsdk.diagnosticMessages, () => [html1LanguagePlugin]),
 	)
 });
 

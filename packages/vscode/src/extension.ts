@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		documentSelector: [{ language: 'html1' }],
 		initializationOptions: {
 			typescript: {
-				tsdk: (await getTsdk(context)).tsdk,
+				tsdk: (await getTsdk(context))!.tsdk,
 			},
 		},
 	};

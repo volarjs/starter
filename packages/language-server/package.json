@@ -11,9 +11,9 @@
 		"html1-language-server": "./bin/html1-language-server.js"
 	},
 	"dependencies": {
-		"@volar/language-core": "~2.3.0-alpha.5",
-		"@volar/language-server": "~2.3.0-alpha.5",
-		"@volar/language-service": "~2.3.0-alpha.5",
+		"@volar/language-core": "~2.3.0",
+		"@volar/language-server": "~2.3.0",
+		"@volar/language-service": "~2.3.0",
 		"volar-service-css": "volar-2.3",
 		"volar-service-emmet": "volar-2.3",
 		"volar-service-html": "volar-2.3",
