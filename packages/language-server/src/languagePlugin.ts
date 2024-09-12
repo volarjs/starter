@@ -1,4 +1,5 @@
-import { CodeMapping, TypeScriptExtraServiceScript, forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
+import { CodeMapping, forEachEmbeddedCode, LanguagePlugin, VirtualCode } from '@volar/language-core';
+import type { TypeScriptExtraServiceScript } from '@volar/typescript';
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 import { URI } from 'vscode-uri';

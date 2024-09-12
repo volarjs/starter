@@ -1,28 +1,28 @@
 import * as serverProtocol from '@volar/language-server/protocol';
 import { activateAutoInsertion, createLabsInfo, getTsdk } from '@volar/vscode';
+import { BaseLanguageClient, LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from '@volar/vscode/node';
 import * as vscode from 'vscode';
-import * as lsp from 'vscode-languageclient/node';
 
-let client: lsp.BaseLanguageClient;
+let client: BaseLanguageClient;
 
 export async function activate(context: vscode.ExtensionContext) {
 
 	const serverModule = vscode.Uri.joinPath(context.extensionUri, 'dist', 'server.js');
 	const runOptions = { execArgv: <string[]>[] };
 	const debugOptions = { execArgv: ['--nolazy', '--inspect=' + 6009] };
-	const serverOptions: lsp.ServerOptions = {
+	const serverOptions: ServerOptions = {
 		run: {
 			module: serverModule.fsPath,
-			transport: lsp.TransportKind.ipc,
+			transport: TransportKind.ipc,
 			options: runOptions
 		},
 		debug: {
 			module: serverModule.fsPath,
-			transport: lsp.TransportKind.ipc,
+			transport: TransportKind.ipc,
 			options: debugOptions
 		},
 	};
-	const clientOptions: lsp.LanguageClientOptions = {
+	const clientOptions: LanguageClientOptions = {
 		documentSelector: [{ language: 'html1' }],
 		initializationOptions: {
 			typescript: {
@@ -30,7 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			},
 		},
 	};
-	client = new lsp.LanguageClient(
+	client = new LanguageClient(
 		'html1-language-server',
 		'HTML1 Language Server',
 		serverOptions,
